@@ -4,6 +4,12 @@ import math
 pool_length = 100
 unit_size = 0.2
 
+def newColor(col, name):
+    mat = bpy.data.materials.get(name)
+    if mat == None:
+        mat = bpy.data.materials.new(name)
+    mat.diffuse_color = col
+
 def cleanAll():
     bpy.ops.object.select_all(action='SELECT')
     bpy.ops.object.delete(use_global=False)
@@ -46,17 +52,17 @@ def create_axe():
     return bpy.context.selected_objects[0]
    
 def waves(t, frame):
+    axe.rotation_euler[1] = t
     for x in range(0, pool_length):
         pool[x].location.z = math.sin(t + x * unit_size) - 1
-        pool[x].keyframe_insert(data_path="location", frame=frame)
-        axe.rotation_euler[1] = t
-        for i in range(0,6):
-            if(i < 4):
-                t += math.pi / 2
-            wheel1[i].rotation_euler[1] = t
-            wheel2[i].rotation_euler[1] = t
-            wheel1[i].keyframe_insert(data_path="rotation_euler", frame=frame)
-            wheel2[i].keyframe_insert(data_path="rotation_euler", frame=frame)
+        pool[x].keyframe_insert(data_path="location", frame=frame)     
+    for i in range(0,6):
+        if(i < 4):
+            t += math.pi / 4
+        wheel1[i].rotation_euler[1] = t
+        wheel2[i].rotation_euler[1] = t
+        wheel1[i].keyframe_insert(data_path="rotation_euler", frame=frame)
+        wheel2[i].keyframe_insert(data_path="rotation_euler", frame=frame)
 
 def create_hull(taillehull):
     sommets_hull = [(0.0, taillehull/1.5, -taillehull/6), (taillehull/4, 0.0, -taillehull/6), (0.0, -taillehull/1.5, -taillehull/6), (-taillehull/4, 0.0, -taillehull/6),
